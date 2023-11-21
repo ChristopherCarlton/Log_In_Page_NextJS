@@ -2,13 +2,13 @@
 
 import {FaFacebookF, FaLinkedinIn, FaGoogle, FaRegEnvelope} from 'react-icons/fa';
 import {MdLockOutline} from 'react-icons/md';
+
 import Link from 'next/link';
 import { useState } from 'react';
 import {signIn} from "next-auth/react";
 import {useRouter} from "next/navigation";
 
 export default function Home() {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
