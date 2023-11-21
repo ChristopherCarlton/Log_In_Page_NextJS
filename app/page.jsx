@@ -1,8 +1,44 @@
+"use client";
+
 import {FaFacebookF, FaLinkedinIn, FaGoogle, FaRegEnvelope} from 'react-icons/fa';
 import {MdLockOutline} from 'react-icons/md';
 import Link from 'next/link';
+import { useState } from 'react';
+import {signIn} from "next-auth/react";
+import {useRouter} from "next/navigation";
 
 export default function Home() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const router = useRouter();
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await signIn("credentials", {
+        email, 
+        password,
+        redirect: false,
+      });
+
+      if(res.error) {
+        setError("Invalid Credentials");
+        return;
+      }
+      router.replace("dashboard");
+
+    } catch (error){
+      console.log(error);
+    }
+  };
+
+
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100">
       <main className="flex flex-col text-align-center items-center justify-center w-full flex-1 px-20 text-center">
@@ -27,13 +63,13 @@ export default function Home() {
               </div> 
               {/*social log in section*/}
               <p className="text-gray-400 my-3">or use your email account</p>
-              <div className="flex flex-col items-center">
+              <form onSubmit={handleSubmit} className="flex flex-col items-center">
                 <div className="bg-gray-100 w-64 p-2 flex items-center mb-3"> 
                   <FaRegEnvelope className="text-gray-400 m-2"/>
                   {/* 
                   
                   */}
-                  <input  type="email" name="email" placeholder="Email" className="bg-gray-100 outline-none text-sm flex-1"/>
+                  <input onChange={(e) => setEmail(e.target.value)}  type="email" name="email" placeholder="Email" className="bg-gray-100 outline-none text-sm flex-1"/>
                 </div>
                 {/* 
                 
@@ -43,7 +79,7 @@ export default function Home() {
                   {/* 
                   
                   */}
-                  <input  type="password" name="password" placeholder="Password" className="bg-gray-100 outline-none text-sm flex-1"/>
+                  <input onChange={(e) => setPassword(e.target.value)}  type="password" name="password" placeholder="Password" className="bg-gray-100 outline-none text-sm flex-1"/>
                   {/* 
                   
                   */}
@@ -60,13 +96,12 @@ export default function Home() {
                   Sign In
                 </button>
 
-                <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">Error Message</div>
-
-                {/* 
-                
-                
-                */}
-              </div>
+                {error && (
+                  <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
+                    {error}
+                  </div>
+                )}
+              </form>
             </div>
           </div> 
           {/* Sign in section */}
